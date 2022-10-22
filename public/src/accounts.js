@@ -14,9 +14,11 @@ return books.reduce((total, book) => {
   return total + idCount},0)
 }
 
+
 function getBooksPossessedByAccount(account, books, authors) {
   const borrowedBooks = books.filter(book => book.borrows.some(borrow => (!borrow.returned && borrow.id === account.id)));
   const result = [];
+  const { findAuthorById } = require("./books");
   borrowedBooks.forEach(book => {
     const bookAuthor = findAuthorById(authors, book.authorId);
     result.push({
