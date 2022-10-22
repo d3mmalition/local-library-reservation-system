@@ -15,14 +15,24 @@ return books.reduce((total, book) => {
 }
 
 function getBooksPossessedByAccount(account, books, authors) {
-  const booksCheckedOut = books.filter((book) => book.borrows[0].returned === false &&
-   book.borrows[0].id === account.id);
-   const booksPossessedByAccount = booksCheckedOut.map((book) => {
-    const author = authors.find((author) => author.id === book.authorId);
-    return {...book, author };
+  const borrowedBooks = books.filter(book => book.borrows.some(borrow => (!borrow.returned && borrow.id === account.id)));
+  const result = [];
+  borrowedBooks.forEach(book => {
+    const bookAuthor = findAuthorById(authors, book.authorId);
+    result.push({
+      id: book.id,
+      title: book.title,
+      genre: book.genre,
+      authorId: book.authorId,
+      author: bookAuthor,
+      borrows: book.borrows,
     });
-    return booksPossessedByAccount
+  });
+  return result;
+}
 
+function borrowsById (book, {id}) {
+  return book.borrows.filter(borrow => borrow.id === id);
 }
 
 module.exports = {
